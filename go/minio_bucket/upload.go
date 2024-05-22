@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -20,7 +20,7 @@ func main() {
 	endpoint := os.Getenv("MINIO_ENDPOINT")
 	minioAccessKey := os.Getenv("MINIO_ACCESS_KEY")
 	minioSecretKey := os.Getenv("MINIO_SECRET_KEY")
-	useSSL := false
+	useSSL := true
 
 	s3Client, err := minio.New(
 		endpoint, &minio.Options{
