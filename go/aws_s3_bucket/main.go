@@ -4,20 +4,22 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/joho/godotenv"
 )
 
-var uploadFolder = "uploads"
-var downloadFolder = "downloads"
+var uploadFolder = "../data_uploads"
+var downloadFolder = "../downloads"
 var uploadFileName = "If_by_Rudyard_Kipling.pdf"
 var downloadFileName = "Ozymandias_of_Egypt_by_Percy_Shelley.pdf"
-var bucketName = "regan-test-bucket"
-var region = "us-east-1"
+var bucketName = os.Getenv("AWS_BUCKET_NAME")
+var region = os.Getenv("AWS_BUCKET_REGION")
 
 func uploadFile() error {
 	awsSession := session.Must(session.NewSession())
@@ -72,7 +74,13 @@ func downloadFile() error {
 }
 
 func main() {
-	region := "us-east-1"
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	bucketName = os.Getenv("AWS_BUCKET_NAME")
+	region = os.Getenv("AWS_BUCKET_REGION")
 
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(region),
@@ -83,8 +91,7 @@ func main() {
 	}
 	svc := s3.New(sess)
 
-	bucketName := "regan-test-bucket"
-	filePath := "public/assets/uploads/If_by_Rudyard_Kipling.pdf"
+	filePath := "../data_uploads/If_by_Rudyard_Kipling.pdf"
 
 	file, err := os.Open(filePath)
 	if err != nil {
