@@ -1,6 +1,7 @@
 public/assets/.DS_Store
 .DS_Store
 go/.DS_Store
-go/.env
+*/.env
 private.key
 public.crt
+python/path
