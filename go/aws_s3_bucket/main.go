@@ -2,10 +2,13 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -70,6 +73,21 @@ func downloadFile() error {
 		return err
 	}
 
+	return nil
+}
+
+func uploadFileUsingHttpRequest(bucketName string, bucketRegion string, filePath string, req *http.Request) error {
+	log.Println("Uploading file...")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return errors.New("Error occurred while making request: " + err.Error())
+	}
+	if resp.StatusCode != 200 {
+		return errors.New("Request received a non-200 response with status code " + strconv.Itoa(resp.StatusCode))
+	}
+	log.Printf("Successfully made HTTP request")
 	return nil
 }
 
